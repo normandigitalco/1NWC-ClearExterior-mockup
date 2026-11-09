@@ -1,0 +1,3 @@
+# MOCKUP: change to "Allow: /" and add the sitemap line at launch
+User-agent: *
+Disallow: /
