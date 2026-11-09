@@ -8,15 +8,15 @@ At launch: remove the noindex meta from each page, set robots.txt to allow and a
 
 - `/` (home)
 - `/services/window-cleaning/`, `/services/pressure-washing/`, `/services/roof-cleaning/`, `/services/gutter-cleaning/`, `/services/house-washing/`, `/services/solar-panel-cleaning/`
-- `/gallery/`, `/reviews/`, `/about/`, `/contact/`, `404.html`
+- `/gallery/`, `/reviews/`, `/about/`, `/contact/`, `/privacy/`, `404.html`
 - `/exterior-cleaning-anacortes-wa/`, `/exterior-cleaning-mount-vernon-wa/`, `/exterior-cleaning-burlington-wa/`, `/exterior-cleaning-camano-island-wa/`, `/exterior-cleaning-la-conner-wa/`, `/exterior-cleaning-sedro-woolley-wa/`, `/exterior-cleaning-stanwood-wa/`
 - Old one-page links (`/#svc-windows` and so on) redirect to the new pages. `/services/` redirects to Window Cleaning (`_redirects`).
 
 ## Behavior (same approach as Bullseye, Kane, Red Line)
 
-- Every page is its own HTML file, so Back, Forward and Refresh are handled by the browser. A head script restores the scroll spot before the first paint on refresh and Back. A link to the page you are on scrolls to the top. The menu, its dropdowns and the photo viewer close when you come back with Back. Mobile menu dropdowns always open collapsed.
+- Every page is its own HTML file, so Back, Forward and Refresh are handled by the browser. A head script restores the scroll spot on refresh and Back, hiding the page for a moment until it is back in place (Bullseye approach). Sections already on screen or above it show at once. A link to the page you are on scrolls to the top. The menu, its dropdowns and the photo viewer close when you come back with Back. Mobile menu dropdowns always open collapsed.
 - Mobile hero height uses `--vh`, set once on load (after the viewport meta) and again only on rotation. The home hero is taller than the screen on phones: `max(100lvh + 20px, 100 × --vh + 120px)`.
-- Home reviews are a looping carousel: the cards are in the track three times and it wraps back to the middle set after each swipe or arrow tap. The reviews page shows 6 at a time (4 on phones).
+- Home reviews are a looping carousel: the cards are in the track three times and it wraps back to the middle set after each swipe or arrow tap. Height-only resizes (the phone address bar) are ignored; on rotation it stays on the same card. The reviews page shows 6 at a time (4 on phones).
 - TikTok in-app browser: a head script adds `tt` to `<html>`; CSS hides videos and play buttons and the JS skips video loading.
 - Hero video: desktop or phone file picked before it loads, starts once the page has loaded, fades in over its poster. Clips wait 200ms after load, play only on screen, fade in when playing. If autoplay is blocked, any tap starts them and a Tap to play button shows. Video files are untouched (no re-encoding).
 - Photos past the first section load as you scroll near them (same files, same quality).

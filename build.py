@@ -87,6 +87,8 @@ def links(h):
     return h
 def paths(h):
     return re.sub(r'(?<=["\' ,(])(img|vid|fonts)/', r'/\1/', h)
+post = post.replace('<span>© 2026 Northwest Clear Exteriors. All rights reserved.</span>', '<span>© <span id="yr">2026</span> Northwest Clear Exteriors · <a href="/privacy/">Privacy</a></span>')
+assert 'id="yr"' in post
 pre, post = paths(links(pre)), paths(links(post))
 for k in pages: pages[k] = paths(links(pages[k]))
 
@@ -126,11 +128,6 @@ const TT=document.documentElement.classList.contains('tt');
 /* old one-page links (/#svc-windows) go to the new page */
 if(cur==='home'&&location.hash&&URLS[location.hash.slice(1)])location.replace(URLS[location.hash.slice(1)]);
 
-/* scroll position per page: saved here, restored by the head script on refresh and Back */
-const SYK='sy:'+location.pathname;
-function saveSy(){try{sessionStorage.setItem(SYK,String(Math.round(window.scrollY)));}catch(e){}}
-window.addEventListener('scroll',function(){clearTimeout(saveSy.t);saveSy.t=setTimeout(saveSy,120);},{passive:true});
-window.addEventListener('pagehide',saveSy);
 
 function navState(){
  const top=window.scrollY<30;
@@ -156,10 +153,23 @@ js = a + core + b
 
 # 2. menus and the photo viewer close when you come back with Back
 js = js.replace("window.addEventListener('pageshow',function(e){if(e.persisted)closeMenu(true);});",
-  "window.addEventListener('pageshow',function(e){if(e.persisted){closeMenu(true);closeDd();if($('#lb').classList.contains('open'))closeLb();navState();}});")
+  "window.addEventListener('pagehide',function(){closeMenu(true);closeDd();});window.addEventListener('pageshow',function(){closeMenu(true);closeDd();if($('#lb').classList.contains('open'))closeLb();navState();});")
 
 # 3. reveal: only the one page exists now
-js = js.replace("$$('.page.active .rv:not(.seen)')", "$$('.rv:not(.seen)')")
+a, b = cut(js, "/* reveal on scroll */", "/* HERO VIDEO")
+js = a + r'''/* scroll reveal: anything already on screen (or above it after a refresh) shows at once */
+function observe(){
+ const rv=$$('.rv');
+ if(!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion:reduce)').matches){rv.forEach(function(e){e.classList.add('seen');});return;}
+ const ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('seen');ro.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -8% 0px'});
+ const first=function(){rv.forEach(function(el){if(el.classList.contains('seen'))return;if(el.getBoundingClientRect().top<window.innerHeight*.92)el.classList.add('seen');else ro.observe(el);});};
+ first();window.addEventListener('pageshow',function(e){if(e.persisted)first();});
+ /* fast flings and the refresh scroll-restore can jump past a short section: show anything already scrolled past */
+ let tk=0;function passed(){tk=0;rv.forEach(function(el){if(!el.classList.contains('seen')&&el.getBoundingClientRect().top<window.innerHeight){el.classList.add('seen');ro.unobserve(el);}});}
+ window.addEventListener('scroll',function(){if(!tk)tk=requestAnimationFrame(passed);},{passive:true});window.addEventListener('load',passed);
+}
+
+''' + b
 
 # 4. hero video: home only, picked before it loads, starts once the page has loaded
 a, b = cut(js, "const hv=$('#heroVid')", "/* CLIPS:")
@@ -202,7 +212,11 @@ reviews = r''' const tr=$('#rvTrack'),all=$('#rvAll');
   $('#rvPrev').addEventListener('click',function(){tr.scrollBy({left:-step(),behavior:'smooth'});});
   $('#rvNext').addEventListener('click',function(){tr.scrollBy({left:step(),behavior:'smooth'});});
   tr.addEventListener('scroll',function(){clearTimeout(wrap.t);wrap.t=setTimeout(wrap,140);},{passive:true});
-  home();window.addEventListener('resize',function(){clearTimeout(home.t);home.t=setTimeout(home,150);});
+  home();window.addEventListener('load',home);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(home);
+  /* phones fire resize when the address bar shows or hides: ignore those height-only changes; on rotation stay on the same card */
+  let lastW=window.innerWidth;
+  function keep(){const c=tr.children,l=tr.getBoundingClientRect().left+parseFloat(getComputedStyle(tr).paddingLeft||0);let best=0,bd=1e9;for(let i=0;i<c.length;i++){const dd=Math.abs(c[i].getBoundingClientRect().left-l);if(dd<bd){bd=dd;best=i;}}const k=n+(best%n);jump(tr.scrollLeft+c[k].getBoundingClientRect().left-l);}
+  window.addEventListener('resize',function(){if(window.innerWidth===lastW)return;lastW=window.innerWidth;clearTimeout(keep.t);keep.t=setTimeout(keep,200);});
  }
  /* reviews page: Show more reviews */
  if(all){
@@ -236,6 +250,7 @@ start = r'''/* photos below the first section load as you scroll toward them */
 })();
 /* start */
 navState();observe();loadMaps();
+(function(){const yr=$('#yr');if(yr)yr.textContent=new Date().getFullYear();})();
 function afterLoad(){heroCtl();setTimeout(startClips,200);if(cur==='contact')loadJobber();}
 if(document.readyState==='complete')afterLoad();else window.addEventListener('load',afterLoad);
 /* Low Power Mode or blocked autoplay: the first tap anywhere starts the videos */
@@ -253,14 +268,27 @@ r = subprocess.run(['npx', '--yes', 'terser@5.36.0', OUT + '/assets/main.src.js'
 if r.returncode != 0: raise SystemExit(r.stderr[:3000])
 
 # ---------- head ----------
-HEADJS = r'''<script>(function(){var d=document.documentElement;d.className='js';
-if(/musical_ly|Bytedance|TikTok|trill_/i.test(navigator.userAgent))d.className+=' tt';
-if('scrollRestoration' in history)history.scrollRestoration='manual';
-d.style.setProperty('--vh',innerHeight*.01+'px');
-addEventListener('orientationchange',function(){setTimeout(function(){d.style.setProperty('--vh',innerHeight*.01+'px');},400);});
-var t='';try{t=performance.getEntriesByType('navigation')[0].type;}catch(e){}
-if(t==='reload'||t==='back_forward'){try{window.__sy=+sessionStorage.getItem('sy:'+location.pathname)||0;}catch(e){}}})();</script>'''
-RESTORE = '<script>if(window.__sy)window.scrollTo(0,window.__sy);</script>'
+HEADJS = r'''<script>(function(){var d=document,h=d.documentElement;h.className='js';
+if(/musical_ly|Bytedance|TikTok|trill_/i.test(navigator.userAgent||''))h.classList.add('tt');
+function setVh(){h.style.setProperty('--vh',(window.innerHeight*0.01)+'px');}setVh();
+window.addEventListener('orientationchange',function(){setTimeout(setVh,400);},{passive:true});
+var K='nw-scroll:'+location.pathname,y=0,t='';
+try{var n=performance.getEntriesByType('navigation')[0];t=n&&n.type||'';}catch(e){}
+var re=(t==='reload'||t==='back_forward');
+try{if('scrollRestoration' in history)history.scrollRestoration=re?'manual':'auto';}catch(e){}
+try{if(re)y=parseInt(sessionStorage.getItem(K)||'0',10)||0;}catch(e){}
+var on=y>80;
+if(on){var st=d.createElement('style');st.textContent='html.nw-r{background:#13284f}html.nw-r body{visibility:hidden}';d.head.appendChild(st);h.classList.add('nw-r');}
+function show(){try{if(re&&'scrollRestoration' in history)history.scrollRestoration='auto';}catch(e){}if(!on)return;on=false;h.classList.remove('nw-r');}
+function go(){if(y>0)window.scrollTo(0,y);}
+function tall(){return h.scrollHeight>=y+window.innerHeight;}
+d.addEventListener('DOMContentLoaded',function(){if(!y)return;go();if(tall())show();});
+window.addEventListener('load',function(){if(y){go();setTimeout(go,150);}show();});
+setTimeout(function(){go();show();},2500);
+var u=0;window.addEventListener('scroll',function(){if(on||u)return;u=1;setTimeout(function(){u=0;try{sessionStorage.setItem(K,String(Math.round(window.scrollY)));}catch(e){}},120);},{passive:true});
+window.addEventListener('pagehide',function(){if(on)return;try{sessionStorage.setItem(K,String(Math.round(window.scrollY)));}catch(e){}});
+})();</script>'''
+RESTORE = ''
 
 def lead(pid):
     m = re.search(r'<header class="ph">.*?<p class="lead">(.*?)</p>', pages[pid], re.S)
@@ -285,9 +313,11 @@ def page_head(pid, title, desc, url, extra=''):
 <meta property="og:image" content="{BASE}/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Northwest Clear Exteriors">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#13284f">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/img/favicon-192.png">
 <link rel="apple-touch-icon" href="/img/favicon-180.png">
 <link rel="preload" as="image" href="/img/logo-white.webp" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="/fonts/lexend-latin-700-normal.woff2" crossorigin>
@@ -361,6 +391,19 @@ nf = ('<div class="page active" id="notfound"><header class="ph"><div class="ph-
       '<div class="in"><h1>Page not found</h1><p class="lead">That page moved or never existed. Try the home page or get a free quote.</p>'
       '<div class="acts"><a class="btn btn-white" href="/">Go to the home page</a></div></div></header></div>')
 open(OUT + '/404.html', 'w', encoding='utf-8').write(page_css(page_head('notfound', 'Page not found' + T, 'Page not found.', '/404') + page_body('notfound', nf)))
+
+pv = ('<div class="page active" id="privacy"><header class="ph"><div class="ph-bg"><img src="/img/curved-windows.webp" alt="" width="1600" height="1200"></div>'
+      '<div class="in"><h1>Privacy policy</h1><p class="lead">What this website collects and how we use it.</p></div></header>'
+      '<section class="sec"><div class="in" style="max-width:760px">'
+      '<p>Northwest Clear Exteriors respects your privacy. This page explains what information this website collects and how it is used.</p>'
+      '<h2 class="h2" style="font-size:1.5rem;margin-top:32px">What we collect</h2><p>When you request a quote, we receive the details you enter, such as your name, phone number, email and address. We use them only to reply to you, prepare your quote and schedule your service.</p>'
+      '<h2 class="h2" style="font-size:1.5rem;margin-top:32px">Quote requests</h2><p>Our quote form is provided by Jobber. Information you enter there is also covered by Jobber\'s own privacy policy.</p>'
+      '<h2 class="h2" style="font-size:1.5rem;margin-top:32px">Analytics</h2><p>This site may use basic analytics to understand how many people visit and which pages are useful. This information is not used to identify you.</p>'
+      '<h2 class="h2" style="font-size:1.5rem;margin-top:32px">Sharing</h2><p>We do not sell or rent your information to anyone.</p>'
+      '<h2 class="h2" style="font-size:1.5rem;margin-top:32px">Contact</h2><p>Questions about this policy? Email <a class="tl" href="mailto:info@nwclearexteriors.com">info@nwclearexteriors.com</a> or call <a class="tl" href="tel:+13604478086">360-447-8086</a>.</p>'
+      '</div></section></div>')
+os.makedirs(OUT + '/privacy', exist_ok=True)
+open(OUT + '/privacy/index.html', 'w', encoding='utf-8').write(page_css(page_head('privacy', 'Privacy Policy' + T, 'How Northwest Clear Exteriors handles the information you send through this website.', '/privacy/') + page_body('privacy', pv)))
 
 # deploy files
 open(OUT + '/_headers', 'w').write('''/*

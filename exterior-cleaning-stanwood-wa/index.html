@@ -3,13 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script>(function(){var d=document.documentElement;d.className='js';
-if(/musical_ly|Bytedance|TikTok|trill_/i.test(navigator.userAgent))d.className+=' tt';
-if('scrollRestoration' in history)history.scrollRestoration='manual';
-d.style.setProperty('--vh',innerHeight*.01+'px');
-addEventListener('orientationchange',function(){setTimeout(function(){d.style.setProperty('--vh',innerHeight*.01+'px');},400);});
-var t='';try{t=performance.getEntriesByType('navigation')[0].type;}catch(e){}
-if(t==='reload'||t==='back_forward'){try{window.__sy=+sessionStorage.getItem('sy:'+location.pathname)||0;}catch(e){}}})();</script>
+<script>(function(){var d=document,h=d.documentElement;h.className='js';
+if(/musical_ly|Bytedance|TikTok|trill_/i.test(navigator.userAgent||''))h.classList.add('tt');
+function setVh(){h.style.setProperty('--vh',(window.innerHeight*0.01)+'px');}setVh();
+window.addEventListener('orientationchange',function(){setTimeout(setVh,400);},{passive:true});
+var K='nw-scroll:'+location.pathname,y=0,t='';
+try{var n=performance.getEntriesByType('navigation')[0];t=n&&n.type||'';}catch(e){}
+var re=(t==='reload'||t==='back_forward');
+try{if('scrollRestoration' in history)history.scrollRestoration=re?'manual':'auto';}catch(e){}
+try{if(re)y=parseInt(sessionStorage.getItem(K)||'0',10)||0;}catch(e){}
+var on=y>80;
+if(on){var st=d.createElement('style');st.textContent='html.nw-r{background:#13284f}html.nw-r body{visibility:hidden}';d.head.appendChild(st);h.classList.add('nw-r');}
+function show(){try{if(re&&'scrollRestoration' in history)history.scrollRestoration='auto';}catch(e){}if(!on)return;on=false;h.classList.remove('nw-r');}
+function go(){if(y>0)window.scrollTo(0,y);}
+function tall(){return h.scrollHeight>=y+window.innerHeight;}
+d.addEventListener('DOMContentLoaded',function(){if(!y)return;go();if(tall())show();});
+window.addEventListener('load',function(){if(y){go();setTimeout(go,150);}show();});
+setTimeout(function(){go();show();},2500);
+var u=0;window.addEventListener('scroll',function(){if(on||u)return;u=1;setTimeout(function(){u=0;try{sessionStorage.setItem(K,String(Math.round(window.scrollY)));}catch(e){}},120);},{passive:true});
+window.addEventListener('pagehide',function(){if(on)return;try{sessionStorage.setItem(K,String(Math.round(window.scrollY)));}catch(e){}});
+})();</script>
 <title>Window and Exterior Cleaning in Stanwood, WA | Northwest Clear Exteriors</title>
 <meta name="description" content="Right across the bridge from Camano Island. Free quotes: 360-447-8086.">
 <!-- MOCKUP: remove the noindex line and switch BASE to the real domain at launch -->
@@ -22,9 +35,11 @@ if(t==='reload'||t==='back_forward'){try{window.__sy=+sessionStorage.getItem('sy
 <meta property="og:image" content="https://1nwc-clearexterior-mockup.pages.dev/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Northwest Clear Exteriors">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#13284f">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/img/favicon-192.png">
 <link rel="apple-touch-icon" href="/img/favicon-180.png">
 <link rel="preload" as="image" href="/img/logo-white.webp" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="/fonts/lexend-latin-700-normal.woff2" crossorigin>
@@ -181,13 +196,13 @@ if(t==='reload'||t==='back_forward'){try{window.__sy=+sessionStorage.getItem('sy
   <div><h4>Service Areas</h4><ul><li><a href="/exterior-cleaning-anacortes-wa/">Anacortes</a></li><li><a href="/exterior-cleaning-mount-vernon-wa/">Mount Vernon</a></li><li><a href="/exterior-cleaning-burlington-wa/">Burlington</a></li><li><a href="/exterior-cleaning-camano-island-wa/">Camano Island</a></li><li><a href="/exterior-cleaning-la-conner-wa/">La Conner</a></li><li><a href="/exterior-cleaning-sedro-woolley-wa/">Sedro-Woolley</a></li><li><a href="/exterior-cleaning-stanwood-wa/">Stanwood</a></li></ul></div>
   <div><h4>Get in touch</h4><ul><li><a class="big" href="tel:+13604478086">360-447-8086</a></li><li><a href="sms:+13604478086">Text us</a></li><li><a href="mailto:info@nwclearexteriors.com">info@nwclearexteriors.com</a></li><li><a href="/contact/">Request a free quote</a></li></ul><p style="margin-top:12px;font-size:14.5px">Mon to Sat, 8:00 AM to 5:00 PM<br>Anacortes, WA 98221</p></div>
  </div>
- <div class="ft-b"><span>© 2026 Northwest Clear Exteriors. All rights reserved.</span><a href="https://normandigitalco.com" target="_blank" rel="noopener">Built by <b>Norman Digital</b></a></div>
+ <div class="ft-b"><span>© <span id="yr">2026</span> Northwest Clear Exteriors · <a href="/privacy/">Privacy</a></span><a href="https://normandigitalco.com" target="_blank" rel="noopener">Built by <b>Norman Digital</b></a></div>
 </footer>
 
 <a class="fab" id="fab" href="/contact/" aria-label="Get a free quote"><svg aria-hidden="true"><use href="#i-quote"/></svg><span>Free Quote</span></a>
 
 <div class="lb" id="lb" role="dialog" aria-label="Photo viewer"><button class="lb-x" type="button" aria-label="Close" onclick="closeLb()">×</button><img id="lbImg" alt=""></div>
-<script>if(window.__sy)window.scrollTo(0,window.__sy);</script>
+
 <script src="/assets/main.js?v=1" defer></script>
 </body>
 </html>

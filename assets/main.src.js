@@ -13,11 +13,6 @@ const TT=document.documentElement.classList.contains('tt');
 /* old one-page links (/#svc-windows) go to the new page */
 if(cur==='home'&&location.hash&&URLS[location.hash.slice(1)])location.replace(URLS[location.hash.slice(1)]);
 
-/* scroll position per page: saved here, restored by the head script on refresh and Back */
-const SYK='sy:'+location.pathname;
-function saveSy(){try{sessionStorage.setItem(SYK,String(Math.round(window.scrollY)));}catch(e){}}
-window.addEventListener('scroll',function(){clearTimeout(saveSy.t);saveSy.t=setTimeout(saveSy,120);},{passive:true});
-window.addEventListener('pagehide',saveSy);
 
 function navState(){
  const top=window.scrollY<30;
@@ -62,7 +57,7 @@ function closeMenu(instant){
 }
 function toggleMobAcc(sid,bid,force){const s=document.getElementById(sid),b=document.getElementById(bid),o=typeof force==='boolean'?force:!s.classList.contains('open');s.classList.toggle('open',o);b.classList.toggle('open',o);b.setAttribute('aria-expanded',o);}
 window.addEventListener('resize',function(){if(window.innerWidth>1040)closeMenu(true);});
-window.addEventListener('pageshow',function(e){if(e.persisted){closeMenu(true);closeDd();if($('#lb').classList.contains('open'))closeLb();navState();}});
+window.addEventListener('pagehide',function(){closeMenu(true);closeDd();});window.addEventListener('pageshow',function(){closeMenu(true);closeDd();if($('#lb').classList.contains('open'))closeLb();navState();});
 /* menu links change color the moment they are pressed */
 $$('.nav-links a,.dd-top,.dd-in a,.mob-links a,.mob-acc').forEach(function(a){a.addEventListener('pointerdown',function(){a.classList.add('down');});});
 
@@ -73,12 +68,16 @@ function toggleFaq(id){
  if(!open){it.classList.add('open');it.querySelector('.faq-b').setAttribute('aria-expanded','true');}
 }
 
-/* reveal on scroll */
-let io=null;
+/* scroll reveal: anything already on screen (or above it after a refresh) shows at once */
 function observe(){
- if(!('IntersectionObserver' in window)){$$('.rv').forEach(function(e){e.classList.add('seen');});return;}
- if(!io)io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('seen');io.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:.08});
- $$('.rv:not(.seen)').forEach(function(e){io.observe(e);});
+ const rv=$$('.rv');
+ if(!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion:reduce)').matches){rv.forEach(function(e){e.classList.add('seen');});return;}
+ const ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('seen');ro.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -8% 0px'});
+ const first=function(){rv.forEach(function(el){if(el.classList.contains('seen'))return;if(el.getBoundingClientRect().top<window.innerHeight*.92)el.classList.add('seen');else ro.observe(el);});};
+ first();window.addEventListener('pageshow',function(e){if(e.persisted)first();});
+ /* fast flings and the refresh scroll-restore can jump past a short section: show anything already scrolled past */
+ let tk=0;function passed(){tk=0;rv.forEach(function(el){if(!el.classList.contains('seen')&&el.getBoundingClientRect().top<window.innerHeight){el.classList.add('seen');ro.unobserve(el);}});}
+ window.addEventListener('scroll',function(){if(!tk)tk=requestAnimationFrame(passed);},{passive:true});window.addEventListener('load',passed);
 }
 
 /* HERO VIDEO: poster image sits behind the video; the video stays invisible until it is really playing, then fades in. */
@@ -179,7 +178,11 @@ document.addEventListener('click',function(e){const b=e.target.closest&&e.target
   $('#rvPrev').addEventListener('click',function(){tr.scrollBy({left:-step(),behavior:'smooth'});});
   $('#rvNext').addEventListener('click',function(){tr.scrollBy({left:step(),behavior:'smooth'});});
   tr.addEventListener('scroll',function(){clearTimeout(wrap.t);wrap.t=setTimeout(wrap,140);},{passive:true});
-  home();window.addEventListener('resize',function(){clearTimeout(home.t);home.t=setTimeout(home,150);});
+  home();window.addEventListener('load',home);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(home);
+  /* phones fire resize when the address bar shows or hides: ignore those height-only changes; on rotation stay on the same card */
+  let lastW=window.innerWidth;
+  function keep(){const c=tr.children,l=tr.getBoundingClientRect().left+parseFloat(getComputedStyle(tr).paddingLeft||0);let best=0,bd=1e9;for(let i=0;i<c.length;i++){const dd=Math.abs(c[i].getBoundingClientRect().left-l);if(dd<bd){bd=dd;best=i;}}const k=n+(best%n);jump(tr.scrollLeft+c[k].getBoundingClientRect().left-l);}
+  window.addEventListener('resize',function(){if(window.innerWidth===lastW)return;lastW=window.innerWidth;clearTimeout(keep.t);keep.t=setTimeout(keep,200);});
  }
  /* reviews page: Show more reviews */
  if(all){
@@ -225,6 +228,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('#lb').cl
 })();
 /* start */
 navState();observe();loadMaps();
+(function(){const yr=$('#yr');if(yr)yr.textContent=new Date().getFullYear();})();
 function afterLoad(){heroCtl();setTimeout(startClips,200);if(cur==='contact')loadJobber();}
 if(document.readyState==='complete')afterLoad();else window.addEventListener('load',afterLoad);
 /* Low Power Mode or blocked autoplay: the first tap anywhere starts the videos */
