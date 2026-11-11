@@ -93,7 +93,7 @@ function hsShow(i){
   const nx=new Image();nx.src='/img/'+HS[(i+1)%HS.length]+'-'+k+'.webp';};
  if(im.complete&&im.naturalWidth)go();else{im.onload=go;im.onerror=function(){hsI=i;};}
 }
-function hsTick(){clearTimeout(hsTimer);if(!hsOn)return;hsTimer=setTimeout(function(){if(hsVis&&!document.hidden)hsShow(hsI+1);hsTick();},5000);}
+function hsTick(){clearTimeout(hsTimer);if(!hsOn)return;hsTimer=setTimeout(function(){if(hsVis&&!document.hidden)hsShow(hsI+1);hsTick();},3000);}
 function hsStart(first){if(hsOn||!hsBox)return;hsOn=true;hsShow(first);hsTick();}
 function heroCtl(){
  if(!hsBox)return;

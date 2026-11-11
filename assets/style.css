@@ -1377,9 +1377,9 @@ html.js .ph+section .rv,html.js .ph+section.rv,html.js .trust2+.intro2 .rv{opaci
 .ft-lbi svg{width:17px;height:17px;color:var(--pop)}
 /* home hero: one video, then a slow photo slideshow */
 .hs{position:absolute;inset:0;z-index:1}
-.hs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease;transform:scale(1)}
-.hs img.on{opacity:1;animation:hsz 6s ease-out forwards}
-@keyframes hsz{from{transform:scale(1)}to{transform:scale(1.05)}}
+.hs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease;transform:scale(1)}
+.hs img.on{opacity:1;animation:hsz 4s ease-out forwards}
+@keyframes hsz{from{transform:scale(1)}to{transform:scale(1.04)}}
 @media(prefers-reduced-motion:reduce){.hs img.on{animation:none}}
 .hero-bg video{z-index:2}
 .hero-bg video.done{opacity:0;transition:opacity 1s ease}
