@@ -34,7 +34,7 @@ document.addEventListener('click',function(e){
 });
 
 /* dropdown */
-function toggleDd(b){if(window.matchMedia('(hover:hover) and (min-width:1041px)').matches&&window.event&&window.event.detail>0)return false;const d=b.parentNode,o=!d.classList.contains('open');d.classList.toggle('open',o);b.setAttribute('aria-expanded',o);return false;}
+function toggleDd(b){if(window.matchMedia('(hover:hover) and (min-width:1181px)').matches&&window.event&&window.event.detail>0)return false;const d=b.parentNode,o=!d.classList.contains('open');d.classList.toggle('open',o);b.setAttribute('aria-expanded',o);return false;}
 function closeDd(){$$('.has-dd.open').forEach(function(d){d.classList.remove('open');d.querySelector('.dd-top').setAttribute('aria-expanded','false');});}
 document.addEventListener('click',function(e){$$('.has-dd.open').forEach(function(d){if(!d.contains(e.target))closeDd();});});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeDd();closeMenu();}});
@@ -56,7 +56,7 @@ function closeMenu(instant){
  document.body.style.overflow='';
 }
 function toggleMobAcc(sid,bid,force){const s=document.getElementById(sid),b=document.getElementById(bid),o=typeof force==='boolean'?force:!s.classList.contains('open');s.classList.toggle('open',o);b.classList.toggle('open',o);b.setAttribute('aria-expanded',o);}
-window.addEventListener('resize',function(){if(window.innerWidth>1040)closeMenu(true);});
+window.addEventListener('resize',function(){if(window.innerWidth>1180)closeMenu(true);});
 window.addEventListener('pagehide',function(){closeMenu(true);closeDd();});window.addEventListener('pageshow',function(){closeMenu(true);closeDd();if($('#lb').classList.contains('open'))closeLb();navState();});
 /* menu links change color the moment they are pressed */
 $$('.nav-links a,.dd-top,.dd-in a,.mob-links a,.mob-acc').forEach(function(a){a.addEventListener('pointerdown',function(){a.classList.add('down');});});
@@ -82,7 +82,7 @@ function observe(){
 
 /* HERO: one video, then a slow photo slideshow. Desktop plays hero-w.mp4 (one wide clip) once, phones play hero-m.mp4 once,
    then both fade into the photo slideshow. */
-const HERO_D='/vid/hero-w.mp4',HERO_M='/vid/hero-m.mp4',HS=['hs-1','hs-4','hs-2','hs-7','hs-8','hs-6','hs-5'];
+const HERO_D='/vid/hero-w.mp4?v=5s',HERO_M='/vid/hero-m.mp4?v=5s',HS=['hs-1','hs-4','hs-2','hs-7','hs-8','hs-6','hs-5'];
 const hv=$('#heroVid'),hp=$('#heroPoster'),hb=$('#heroPlay'),hsBox=$('#heroSlides');
 let hsTimer=0,hsI=-1,hsOn=false,hsVis=true;
 function hsWide(){return window.innerWidth>880;}
@@ -93,7 +93,7 @@ function hsShow(i){
   const nx=new Image();nx.src='/img/'+HS[(i+1)%HS.length]+'-'+k+'.webp';};
  if(im.complete&&im.naturalWidth)go();else{im.onload=go;im.onerror=function(){hsI=i;};}
 }
-function hsTick(){clearTimeout(hsTimer);if(!hsOn)return;hsTimer=setTimeout(function(){if(hsVis&&!document.hidden)hsShow(hsI+1);hsTick();},6500);}
+function hsTick(){clearTimeout(hsTimer);if(!hsOn)return;hsTimer=setTimeout(function(){if(hsVis&&!document.hidden)hsShow(hsI+1);hsTick();},5000);}
 function hsStart(first){if(hsOn||!hsBox)return;hsOn=true;hsShow(first);hsTick();}
 function heroCtl(){
  if(!hsBox)return;
