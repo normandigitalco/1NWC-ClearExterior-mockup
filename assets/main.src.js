@@ -93,13 +93,13 @@ function hsShow(i){
   const nx=new Image();nx.src='/img/'+HS[(i+1)%HS.length]+'-'+k+'.webp';};
  if(im.complete&&im.naturalWidth)go();else{im.onload=go;im.onerror=function(){hsI=i;};}
 }
-function hsTick(){clearTimeout(hsTimer);if(!hsOn)return;hsTimer=setTimeout(function(){if(hsVis&&!document.hidden)hsShow(hsI+1);hsTick();},3000);}
+function hsTick(first){clearTimeout(hsTimer);if(!hsOn)return;hsTimer=setTimeout(function(){if(hsVis&&!document.hidden)hsShow(hsI+1);hsTick();},first?2200:3000);}
 function heroCtl(){
  if(!hsBox||hsOn)return;
  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
  hsOn=true;hsI=0;
  const nx=new Image();nx.src='/img/'+HS[1]+'-'+(hsWide()?'d':'m')+'.webp';
- hsTick();
+ hsTick(true);
 }
 if(hsBox){
  if(hp.complete&&hp.naturalWidth){hp.classList.add('ld');hp.style.transition='none';heroCtl();}else hp.addEventListener('load',function(){hp.classList.add('ld');heroCtl();});
