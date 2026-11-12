@@ -82,7 +82,7 @@ function observe(){
 
 /* HERO: photo slideshow. The first photo is the poster in the HTML (loads first, counts as slide 1),
    then a new photo crossfades in every 3 seconds. Pauses while off screen or in a background tab. */
-const HS=['hs-1','hs-4','hs-2','hs-7','hs-8','hs-6','hs-5'];
+const HS=['hs-4','hs-1','hs-2','hs-7','hs-8','hs-6','hs-5'];
 const hp=$('#heroPoster'),hsBox=$('#heroSlides');
 let hsTimer=0,hsI=0,hsOn=false,hsVis=true;
 function hsWide(){return window.innerWidth>880;}
