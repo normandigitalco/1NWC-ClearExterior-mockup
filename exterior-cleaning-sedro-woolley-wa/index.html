@@ -40,6 +40,7 @@ window.addEventListener('pagehide',function(){if(on)return;try{sessionStorage.se
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon-192.png">
 <link rel="apple-touch-icon" href="/img/favicon-180.png">
+<link rel="preload" as="image" href="/img/cottage-ph-800.webp" media="(max-width:880px)" fetchpriority="high"><link rel="preload" as="image" href="/img/cottage-ph-1600.webp" media="(min-width:881px)" fetchpriority="high">
 <link rel="preload" as="image" href="/img/logo-white.webp" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="/fonts/lexend-latin-700-normal.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/lexend-latin-600-normal.woff2" crossorigin>
@@ -47,7 +48,7 @@ window.addEventListener('pagehide',function(){if(on)return;try{sessionStorage.se
 <link rel="dns-prefetch" href="https://clienthub.getjobber.com">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.pdf"}}]},"eagerness":"moderate"}],"prefetch":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-E5X0141PVC');(function(){var l=0;function g(){if(l)return;l=1;var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=G-E5X0141PVC';document.head.appendChild(s)}addEventListener('load',function(){setTimeout(g,3000)});['touchstart','scroll','keydown','pointerdown'].forEach(function(e){addEventListener(e,g,{once:true,passive:true})})})();document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href');if(h.indexOf('tel:')===0)gtag('event','call_click',{link_url:h});else if(h.indexOf('sms:')===0)gtag('event','text_click',{link_url:h});else if(h.indexOf('mailto:')===0)gtag('event','email_click');else if(h==='/contact/'||h.indexOf('clienthub.getjobber.com')>-1)gtag('event','quote_click',{link_text:(a.textContent||'').trim().slice(0,40)});},true);</script>
-<link rel="stylesheet" href="/assets/site.css?v=2be92f98">
+<link rel="stylesheet" href="/assets/site.css?v=76655a8c">
 
 
 <script type="application/ld+json" data-x>{"@context":"https://schema.org","@type":"Service","name":"Exterior cleaning in Sedro-Woolley, WA","serviceType":"Exterior cleaning","url":"https://nwclearexteriors.com/exterior-cleaning-sedro-woolley-wa/","provider":{"@id":"https://nwclearexteriors.com/#business"},"areaServed":{"@type":"City","name":"Sedro-Woolley, WA"}}</script>
@@ -143,7 +144,7 @@ window.addEventListener('pagehide',function(){if(on)return;try{sessionStorage.se
 
 <div class="page active" id="area-sedro-woolley">
  <header class="ph">
- <div class="ph-bg"><img fetchpriority="high" src="/img/cottage.webp" srcset="/img/cottage-800.webp 800w, /img/cottage.webp 1600w" sizes="100vw" alt="" width="1600" height="1200" decoding="async"></div>
+ <div class="ph-bg"><picture><source media="(min-width:881px)" srcset="/img/cottage-ph-1600.webp"><img fetchpriority="high" src="/img/cottage-ph-800.webp" alt="" width="800" height="600" decoding="async" style="background:#222 url(data:image/webp;base64,UklGRhoBAABXRUJQVlA4IA4BAACQBQCdASogABgAPu1iqE2ppaOiMAgBMB2JZQDHMywYdxooShyRwjCfoGs4kioU/2XoBgareAD9rlHIjYPUS481zJFH4wqFQshUY27cztXulGCytKm/1f39Qig85k3CBwNPDMxb24Q6T8gayPeuOUCFP8+QNwC8OLrabafUsANDgHrgX8dR0S8rN7weQdqTXJdJ+LD/et7uXkmilQrEpi+6Ela6USgXUvlbLEeCCdt2OylH682yt14dpb1AEjX3DIVNLfKX4MwLGzovYBjCYAYdLwuI8ItM0eoL/QcPK/PUzxe8Q3tbOJGYnOfpPUDyYt2EUO0k19qyczhwJoW4BOhF/0e3qHrYNI56PfVG0AA=) center/cover"></picture></div>
  <div class="in">
   <h1>Exterior cleaning in Sedro-Woolley, WA</h1>
   <p class="lead">Tall firs and foothill rain mean needles and moss. We clear both.</p>
@@ -232,6 +233,6 @@ window.addEventListener('pagehide',function(){if(on)return;try{sessionStorage.se
 
 <div class="lb" id="lb" role="dialog" aria-label="Photo viewer"><button class="lb-x" type="button" aria-label="Close" onclick="closeLb()">×</button><img id="lbImg" alt=""></div>
 
-<script src="/assets/main.js?v=86600421" defer></script>
+<script src="/assets/main.js?v=1bfb04f9" defer></script>
 </body>
 </html>

@@ -223,6 +223,22 @@ function loadJobber(){
  f.addEventListener('load',function(){w.classList.add('ok');});
  w.appendChild(f);
 }
+/* Jobber form: the form inside the iframe reports its own height ("573px") through postMessage, the same message Jobber's
+   official embed script uses. Fit the iframe to it so the form never scrolls inside its box, and when a step changes
+   (big height change) while the top of the form is above the screen, bring the top of the new step into view. */
+(function(){
+ let last=0;
+ window.addEventListener('message',function(e){
+  if(e.origin!=='https://clienthub.getjobber.com')return;
+  const m=/^(\d+)px$/.exec(String(e.data));if(!m)return;
+  const h=+m[1];if(h<200)return;
+  const f=document.querySelector('.jb iframe');if(!f)return;
+  const w=f.parentNode;w.classList.add('fit');f.style.height=(h+16)+'px';
+  if(last&&Math.abs(h-last)>120){const t=w.getBoundingClientRect().top;
+   if(t<0){const nav=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||80;window.scrollTo({top:window.scrollY+t-nav-12,behavior:'instant'});}}
+  last=h;
+ });
+})();
 /* gallery before/after board: filter by service, 8 rows at a time */
 (function(){
  const box=$('#baw');if(!box)return;
