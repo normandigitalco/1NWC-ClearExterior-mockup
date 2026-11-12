@@ -223,6 +223,16 @@ function loadJobber(){
  f.addEventListener('load',function(){w.classList.add('ok');});
  w.appendChild(f);
 }
+/* Page-top photos: when a link to another page is pointed at or touched, start downloading that page's header photo
+   right away (phone or desktop version, matching what the page will show), so it is usually already there when the page opens. */
+(function(){
+ const PH={"/about/":"van-water","/contact/":"curved-windows","/exterior-cleaning-anacortes-wa/":"victor-sun","/exterior-cleaning-burlington-wa/":"van-window","/exterior-cleaning-camano-island-wa/":"curved-windows","/exterior-cleaning-la-conner-wa/":"garage-cottage","/exterior-cleaning-mount-vernon-wa/":"cottage-2","/exterior-cleaning-sedro-woolley-wa/":"cottage","/exterior-cleaning-stanwood-wa/":"window-tractor","/gallery/":"curved-windows","/privacy/":"curved-windows","/reviews/":"van-window","/services/gutter-cleaning/":"gut-5-after","/services/holiday-lights/":"holiday-1","/services/house-washing/":"siding-garage-after","/services/pressure-washing/":"pw-bay-drive-after","/services/roof-cleaning/":"metal-lake-after","/services/solar-panel-cleaning/":"solar-water","/services/window-cleaning/":"a-frame-windows"},got={};
+ function warm(e){const a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;
+  let p=a.getAttribute('href').split('#')[0].split('?')[0];if(!p.endsWith('/'))p+='/';
+  const n=PH[p];if(!n||got[n]||p===location.pathname)return;got[n]=1;
+  const i=new Image();i.decoding='async';i.src='/img/'+n+(window.matchMedia('(min-width:881px)').matches?'-ph-1600':'-ph-800')+'.webp';}
+ ['pointerover','touchstart','focusin'].forEach(function(ev){document.addEventListener(ev,warm,{passive:true});});
+})();
 /* Jobber form: the form inside the iframe reports its own height ("573px") through postMessage, the same message Jobber's
    official embed script uses. Fit the iframe to it so the form never scrolls inside its box, and when a step changes
    (big height change) while the top of the form is above the screen, bring the top of the new step into view. */
