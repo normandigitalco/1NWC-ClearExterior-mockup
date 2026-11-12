@@ -1492,3 +1492,7 @@ html.js .cred+section .rv,html.js .cred+section.rv{opacity:1;transform:none;tran
 /* town pages: the "other towns" list sits in 2 columns under the chips */
 .amap-w .towns{margin-top:26px}
 @media(max-width:600px){.amap a.pin[href*="mount-vernon"] b{left:50%;right:auto;top:calc(100% + 3px);transform:translateX(-50%)}}
+
+/* first hero photo gets the same slow zoom as the slides that follow */
+#heroPoster{animation:hsz 4s ease-out forwards}
+@media(prefers-reduced-motion:reduce){#heroPoster{animation:none}}

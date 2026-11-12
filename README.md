@@ -24,7 +24,7 @@ At launch: remove the noindex meta from each page, set robots.txt to allow and a
 
 ## Editing
 
-`build.py` regenerates every page from the single-file design (`NWClear19.html`): `python3 build.py NWClear19.html out`. CSS is inlined (minified) in each page; `assets/style.css` is the readable source. `assets/main.js` is minified with terser from `assets/main.src.js`; bump the `?v=` after changing it.
+
 
 ## Round 2 (client notes, Nov 10)
 
@@ -38,7 +38,7 @@ At launch: remove the noindex meta from each page, set robots.txt to allow and a
 - **Photos:** every new photo has a full size (1600px, used by the photo viewer and big screens), an `-800` and a `-480` version, loaded only when scrolled near (`data-src`/`data-srcset`).
 - **Quote form speed:** the Jobber iframe is in the Contact page HTML, so it starts loading with the page. Pointing at or pressing any quote link on another page warms up the Jobber connection and prefetches the form, and the Contact page is prerendered on hover.
 
-**Editing from now on:** edit the page HTML directly. Do not rerun `build.py` from the single-file design: it would overwrite these changes. CSS: edit `assets/style.css`, then minify it with lightningcss and paste it into the `<style>` of every page. JS: edit `assets/main.src.js`, run terser to `assets/main.js` and bump `?v=`.
+**Editing from now on:** edit the page HTML directly. Do not rerun `build.py` from the single-file design: it would overwrite these changes. CSS: edit `assets/style.css`, minify it with lightningcss to `assets/site.css` and bump `?v=` in every page (one cached stylesheet for the whole site, like Kane). JS: edit `assets/main.src.js`, run terser to `assets/main.js` and bump `?v=`.
 
 ## Launch checklist
 
