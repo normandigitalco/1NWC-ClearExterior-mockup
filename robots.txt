@@ -1,3 +1,4 @@
-# MOCKUP: change to "Allow: /" and add the sitemap line at launch
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://nwclearexteriors.com/sitemap.xml

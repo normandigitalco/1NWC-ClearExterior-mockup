@@ -21,3 +21,10 @@
 
 /
   Cache-Control: public, max-age=0, must-revalidate
+
+# Keep the old mockup address out of Google (the real domain is nwclearexteriors.com)
+https://1nwc-clearexterior-mockup.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.1nwc-clearexterior-mockup.pages.dev/*
+  X-Robots-Tag: noindex
