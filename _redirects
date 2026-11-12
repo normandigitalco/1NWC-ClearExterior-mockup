@@ -1,2 +1,14 @@
-/services /services/window-cleaning/ 302
-/services/ /services/window-cleaning/ 302
+# Old WordPress pages (nwclearexteriors.com before Nov 2026) -> new pages. 301 = permanent, Google moves the ranking over.
+# /about/ and /reviews/ have the same address on the new site, so they need no redirect.
+/services / 301
+/services/ / 301
+/completed-jobs /gallery/ 301
+/completed-jobs/ /gallery/ 301
+/faq / 301
+/faq/ / 301
+/quote /contact/ 301
+/quote/ /contact/ 301
+# WordPress leftovers (default post, category and author pages)
+/2026/* / 301
+/category/* / 301
+/author/* / 301
