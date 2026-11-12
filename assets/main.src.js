@@ -102,7 +102,7 @@ function heroCtl(){
  hsTick();
 }
 if(hsBox){
- if(hp.complete&&hp.naturalWidth){hp.classList.add('ld');hp.style.transition='none';}else hp.addEventListener('load',function(){hp.classList.add('ld');});
+ if(hp.complete&&hp.naturalWidth){hp.classList.add('ld');hp.style.transition='none';heroCtl();}else hp.addEventListener('load',function(){hp.classList.add('ld');heroCtl();});
  if('IntersectionObserver' in window)new IntersectionObserver(function(es){hsVis=es[0].isIntersecting;},{threshold:0}).observe(hsBox);
 }
 
@@ -256,7 +256,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('#lb').cl
 /* start */
 navState();observe();loadMaps();
 (function(){const yr=$('#yr');if(yr)yr.textContent=new Date().getFullYear();})();
-function afterLoad(){heroCtl();setTimeout(startClips,200);if(cur==='contact')loadJobber();}
+function afterLoad(){setTimeout(startClips,200);if(cur==='contact')loadJobber();}
 if(document.readyState==='complete')afterLoad();else window.addEventListener('load',afterLoad);
 /* Low Power Mode or blocked autoplay: the first tap anywhere starts the videos */
 document.addEventListener('pointerdown',function(){$$('.clip.blocked:not(.paused) video').forEach(function(v){v.play().catch(function(){});});},{once:true,passive:true});
