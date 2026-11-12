@@ -15,7 +15,8 @@ try{if(re)y=parseInt(sessionStorage.getItem(K)||'0',10)||0;}catch(e){}
 var on=y>80;
 if(on){var st=d.createElement('style');st.textContent='html.nw-r{background:#13284f}html.nw-r body{visibility:hidden}';d.head.appendChild(st);h.classList.add('nw-r');}
 function show(){try{if(re&&'scrollRestoration' in history)history.scrollRestoration='auto';}catch(e){}if(!on)return;on=false;h.classList.remove('nw-r');}
-function go(){if(y>0)window.scrollTo(0,y);}
+var mv=0;['touchstart','wheel','keydown','mousedown'].forEach(function(e){window.addEventListener(e,function(){mv=1;},{passive:true,capture:true});});
+function go(){if(y>0&&!mv&&Math.abs(window.scrollY-y)>2)window.scrollTo(0,y);}
 function tall(){return h.scrollHeight>=y+window.innerHeight;}
 d.addEventListener('DOMContentLoaded',function(){if(!y)return;go();if(tall())show();});
 window.addEventListener('load',function(){if(y){go();setTimeout(go,150);}show();});
