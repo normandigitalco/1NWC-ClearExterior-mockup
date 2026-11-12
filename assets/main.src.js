@@ -80,11 +80,11 @@ function observe(){
  window.addEventListener('scroll',function(){if(!tk)tk=requestAnimationFrame(passed);},{passive:true});window.addEventListener('load',passed);
 }
 
-/* HERO: one video, then a slow photo slideshow. Desktop plays hero-w.mp4 (one wide clip) once, phones play hero-m.mp4 once,
-   then both fade into the photo slideshow. */
-const HERO_D='/vid/hero-w.mp4?v=5s',HERO_M='/vid/hero-m.mp4?v=5s',HS=['hs-1','hs-4','hs-2','hs-7','hs-8','hs-6','hs-5'];
-const hv=$('#heroVid'),hp=$('#heroPoster'),hb=$('#heroPlay'),hsBox=$('#heroSlides');
-let hsTimer=0,hsI=-1,hsOn=false,hsVis=true;
+/* HERO: photo slideshow. The first photo is the poster in the HTML (loads first, counts as slide 1),
+   then a new photo crossfades in every 3 seconds. Pauses while off screen or in a background tab. */
+const HS=['hs-1','hs-4','hs-2','hs-7','hs-8','hs-6','hs-5'];
+const hp=$('#heroPoster'),hsBox=$('#heroSlides');
+let hsTimer=0,hsI=0,hsOn=false,hsVis=true;
 function hsWide(){return window.innerWidth>880;}
 function hsShow(i){
  const n=HS[i%HS.length],k=hsWide()?'d':'m';let im=hsBox.querySelector('[data-n="'+n+'"]');
@@ -94,22 +94,15 @@ function hsShow(i){
  if(im.complete&&im.naturalWidth)go();else{im.onload=go;im.onerror=function(){hsI=i;};}
 }
 function hsTick(){clearTimeout(hsTimer);if(!hsOn)return;hsTimer=setTimeout(function(){if(hsVis&&!document.hidden)hsShow(hsI+1);hsTick();},3000);}
-function hsStart(first){if(hsOn||!hsBox)return;hsOn=true;hsShow(first);hsTick();}
 function heroCtl(){
- if(!hsBox)return;
- const still=TT||window.matchMedia('(prefers-reduced-motion:reduce)').matches;
- const src=hsWide()?HERO_D:HERO_M;
- if(still){if(hsWide())hsStart(0);return;}
- if(!src){hsOn=true;hsI=0;hsTick();return;}   /* desktop: the poster is slide 1, carry on from there */
- hv.src=src;hv.load();
- const p=hv.play();if(p&&p.catch)p.catch(function(){hsStart(0);});
+ if(!hsBox||hsOn)return;
+ if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ hsOn=true;hsI=0;
+ const nx=new Image();nx.src='/img/'+HS[1]+'-'+(hsWide()?'d':'m')+'.webp';
+ hsTick();
 }
-if(hv){
- const ld=function(){hp.classList.add('ld');};
- if(hp.complete&&hp.naturalWidth){hp.classList.add('ld');hp.style.transition='none';}else hp.addEventListener('load',ld);
- hv.addEventListener('playing',function(){hv.classList.add('on');hb.classList.remove('show');});
- hv.addEventListener('ended',function(){hv.classList.add('done');hsStart(0);});
- hb.addEventListener('click',function(){hv.play().catch(function(){});});
+if(hsBox){
+ if(hp.complete&&hp.naturalWidth){hp.classList.add('ld');hp.style.transition='none';}else hp.addEventListener('load',function(){hp.classList.add('ld');});
  if('IntersectionObserver' in window)new IntersectionObserver(function(es){hsVis=es[0].isIntersecting;},{threshold:0}).observe(hsBox);
 }
 
@@ -266,7 +259,7 @@ navState();observe();loadMaps();
 function afterLoad(){heroCtl();setTimeout(startClips,200);if(cur==='contact')loadJobber();}
 if(document.readyState==='complete')afterLoad();else window.addEventListener('load',afterLoad);
 /* Low Power Mode or blocked autoplay: the first tap anywhere starts the videos */
-document.addEventListener('pointerdown',function(){if(hv&&hv.src&&hv.paused)hv.play().catch(function(){});$$('.clip.blocked:not(.paused) video').forEach(function(v){v.play().catch(function(){});});},{once:true,passive:true});
+document.addEventListener('pointerdown',function(){$$('.clip.blocked:not(.paused) video').forEach(function(v){v.play().catch(function(){});});},{once:true,passive:true});
 
 /* project viewer: thumbnails swap the main photo */
 $$('.pv-g').forEach(function(g){

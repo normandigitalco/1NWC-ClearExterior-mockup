@@ -1483,3 +1483,13 @@ html.js .cred+section .rv,html.js .cred+section.rv{opacity:1;transform:none;tran
 .baw .gph span.tg.a{background:var(--navy);color:#fff}
 .baw-cap{grid-column:1/-1;margin:-4px 0 14px;font-weight:600;font-size:15.5px;color:var(--navy)}
 @media(max-width:560px){.baw .gph span.tg{font-size:11px;left:8px;bottom:8px;padding:5px 8px}}
+/* contact card: same area map as the home page */
+.ct-amap{margin-top:6px}
+@media(max-width:900px){.ct-amap{display:none}}
+/* smooth page-to-page transitions (Chrome, Edge, Safari 18.2+; other browsers just load normally) */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:ease}
+#topnav{view-transition-name:topnav}
+::view-transition-group(topnav){animation-duration:0s}
+@media(prefers-reduced-motion:reduce){@view-transition{navigation:none}}
+.ct-amap a.pin[href*="mount-vernon"] b{left:50%;top:calc(100% + 3px);transform:translateX(-50%)}

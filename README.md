@@ -28,7 +28,7 @@ At launch: remove the noindex meta from each page, set robots.txt to allow and a
 
 ## Round 2 (client notes, Nov 10)
 
-- **Home hero:** headline is "Premium Exterior Cleaning". Desktop plays `hero-w.mp4` (one wide clip cropped from the phone video) once and phones play `hero-m.mp4` once, then both fade into a slow photo slideshow (`/img/hs-1..6-d.webp` on desktop, `-m.webp` on phones). To use a different video, change `HERO_D` / `HERO_M` in `assets/main.src.js`.
+- **Home hero:** headline "Premium Exterior Cleaning" over a photo slideshow (no video, per Victor). The first photo (`/img/hs-1-d.webp` desktop, `hs-1-m.webp` phones) is in the HTML and loads first; the rest crossfade in every 3 seconds (list `HS` in `assets/main.src.js`). When Victor sends a landscape video, it can go back in front of the slideshow.
 - **Pop color:** every quote and call button uses `.btn-pop` (`--pop:#f7a823`, navy text).
 - **Licensed, Bonded & Insured:** home hero, home trust card, a credentials strip under every service, area, About and Gallery header (`.cred`), every CTA band and the footer.
 - **Holiday lights:** new page `/services/holiday-lights/`, in the Services menus, footer, sitemap and a card on the home page.
@@ -42,7 +42,7 @@ At launch: remove the noindex meta from each page, set robots.txt to allow and a
 
 ## Launch checklist
 
-1. Confirm with Victor: hours, email address (`nwclearexteriors.com` vs `northwestclearexteriors.com`), and the same name, phone and address on Google, Yelp, BBB and Nextdoor.
+1. Hours are set to Mon to Sat, 7:00 AM to 7:00 PM (matches his Google profile). Confirm with Victor: email address (`nwclearexteriors.com` vs `northwestclearexteriors.com`), and the same name, phone and address on Google, Yelp, BBB and Nextdoor.
 2. Run `python3 launch.py https://www.<real-domain>` (removes `noindex`, swaps the mockup address everywhere, opens `robots.txt` with the sitemap line). Commit and push.
 3. Connect the domain in Cloudflare Pages.
 4. Google Search Console: verify the domain, submit `/sitemap.xml`, request indexing for the home page and service pages.
@@ -56,3 +56,9 @@ At launch: remove the noindex meta from each page, set robots.txt to allow and a
 - Schema: `HomeAndConstructionBusiness` (`@id …/#business`) on the home page; `Service` (provider = the business, areaServed = the towns) on each service and town page; `BreadcrumbList` on every inner page; `FAQPage` wherever there is an FAQ.
 - Internal links: every service page links to all 7 town pages ("near you" section), every town page links to all 7 service pages (under the map).
 - `sitemap.xml` has `lastmod`. Update it when pages change.
+
+## Nov 11 updates
+
+- Hours: Mon to Sat, 7:00 AM to 7:00 PM, Sunday closed (footer, contact, schema).
+- Area map on Home, About, Contact and every town page (no Google map embeds left). Schema `areaServed` lists every town in his Google Business Profile.
+- Page transitions: cross-document View Transitions (a quick fade, the nav stays put). Skipped on Back/Refresh so scroll restore is untouched. Browsers without support just load the page.
