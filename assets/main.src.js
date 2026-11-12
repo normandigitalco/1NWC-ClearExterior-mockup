@@ -241,11 +241,15 @@ function loadJobber(){
  window.addEventListener('message',function(e){
   if(e.origin!=='https://clienthub.getjobber.com')return;
   const m=/^(\d+)px$/.exec(String(e.data));if(!m)return;
-  const h=+m[1];if(h<200)return;
+  const h=+m[1];if(h<60||(!last&&h<200))return; /* skip the tiny load-time sizes, but allow a short thank-you screen after the form has shown */
   const f=document.querySelector('.jb iframe');if(!f)return;
   const w=f.parentNode;w.classList.add('fit');f.style.height=(h+16)+'px';
-  if(last&&Math.abs(h-last)>120){const t=w.getBoundingClientRect().top;
-   if(t<0){const nav=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||80;window.scrollTo({top:window.scrollY+t-nav-12,behavior:'instant'});}}
+  if(last&&Math.abs(h-last)>120){const r=w.getBoundingClientRect(),vh=window.innerHeight;
+   if(r.top<0||r.top>vh*.6){
+    /* short screen (Jobber's "request received" thank-you): land it in the middle of the screen, like the Kane form does */
+    if(h<last&&h+16<vh*.7)w.scrollIntoView({block:'center',behavior:'instant'});
+    /* new step: bring the top of the step just under the nav */
+    else{const nav=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||80;window.scrollTo({top:window.scrollY+r.top-nav-12,behavior:'instant'});}}}
   last=h;
  });
 })();
