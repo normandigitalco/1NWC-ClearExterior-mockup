@@ -816,6 +816,8 @@ footer{position:relative;overflow:hidden;isolation:isolate}
 /* ===== v7 ===== */
 /* dropdowns: hover on desktop, one highlight colour */
 @media(hover:hover) and (min-width:1041px){.has-dd:hover:not(.shut) .dd{display:block}.has-dd:hover:not(.shut) .dd-chev{transform:rotate(180deg)}}
+/* desktop dropdown hover intent: a menu stays up for a moment after the mouse leaves, and a brief brush over a neighbouring menu does not open it, so moving diagonally into a dropdown never switches menus */
+@media(hover:hover) and (min-width:1041px){.has-dd .dd{display:block;visibility:hidden;transition:visibility 0s linear .2s}.has-dd:hover:not(.shut) .dd{visibility:visible;transition-delay:.07s}.has-dd.open .dd{visibility:visible;transition-delay:0s}.has-dd.shut .dd{visibility:hidden;transition:none}}
 .dd-in{border-radius:var(--r)}
 .dd-in a.on{background:var(--ice);color:var(--navy)}
 @media(hover:hover){.dd-in a:hover,.dd-in a:not(.on):hover{background:var(--ice);color:var(--navy)}}

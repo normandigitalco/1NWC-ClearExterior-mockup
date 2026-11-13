@@ -62,3 +62,9 @@ At launch: remove the noindex meta from each page, set robots.txt to allow and a
 - Hours: Mon to Sat, 7:00 AM to 7:00 PM, Sunday closed (footer, contact, schema).
 - Area map on Home, About, Contact and every town page (no Google map embeds left). Schema `areaServed` lists every town in his Google Business Profile.
 - Page transitions: cross-document View Transitions (a quick fade, the nav stays put). Skipped on Back/Refresh so scroll restore is untouched. Browsers without support just load the page.
+
+## Nov 12 updates
+
+- Service areas: every town from his Google Business Profile is now listed. The 7 towns with pages stay linked; the other 16 (Arlington, Arlington Heights, Bellingham, Bow, Bryant, Edison, Fidalgo Island, Guemes Island, Kayak Point, Lake Goodwin, Lake Ketchum, Lake Stevens, Marysville, Sisco Heights, Sunday Lake, Warm Beach) are plain pinned items in the list on Home and About, and in the town line under the Contact map. The map itself is unchanged (pins only for towns with pages).
+- "Don't see your town?" (was "Do not").
+- Desktop dropdowns have hover intent: a menu opens after 70ms of hover and stays up 200ms after the mouse leaves, so moving diagonally from About into its menu no longer brushes Service Areas open and lands the click on Anacortes. Tested: every nav link and dropdown item opens on the first click at 1280, 1440 and 1920 wide, including after Back.
